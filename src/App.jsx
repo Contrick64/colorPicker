@@ -16,7 +16,7 @@ function App() {
   }
 
   async function handleChangeColorComplete() {
-    const url = `https://colornames.org/search/json/?hex=${colorData.hex}`;
+    const url = `https://www.thecolorapi.com/id?hex=${colorData.hex}`;
     fetch(url).then((res) => console.log(res));
   }
   function pickTextColor(bgColor, lightColor = "white", darkColor = "black") {
