@@ -16,9 +16,8 @@ function App() {
   }
 
   async function handleChangeColorComplete() {
-    const proxy = "https://cors-anywhere.herokuapp.com/";
     const url = `https://colornames.org/search/json/?hex=${colorData.hex}`;
-    fetch(proxy + url).then((res) => console.log(res));
+    fetch(url).then((res) => console.log(res));
   }
   function pickTextColor(bgColor, lightColor = "white", darkColor = "black") {
     var color = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
