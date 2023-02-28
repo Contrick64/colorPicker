@@ -1,24 +1,47 @@
 import "./App.scss";
 import { ChromePicker as Picker } from "react-color";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const [colorData, setColorData] = useState({
-    hex: "f3bac3",
-    colorName: "vidalia",
+    hex: getRandomHex(),
+    colorName: "...",
   });
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      handleChangeColorComplete();
+    }, 300);
+
+    return () => clearTimeout(getData);
+  }, [colorData.hex]);
 
   function handleChangeColor(color) {
-    setColorData((prevState) => ({
-      ...prevState,
+    setColorData((prev) => ({
+      ...prev,
       hex: color.hex.slice(1),
     }));
   }
 
-  async function handleChangeColorComplete() {
-    const url = `https://www.thecolorapi.com/id?hex=${colorData.hex}`;
-    fetch(url).then((res) => console.log(res));
+  function handleChangeColorComplete() {
+    const url = new URL(`https://www.thecolorapi.com/id?hex=${colorData.hex}`);
+    fetch(url)
+      .then((res) => res.json())
+      .then((json) => {
+        setColorData((prev) => {
+          return { ...prev, colorName: json.name.value };
+        });
+      });
   }
+
+  function getRandomHex() {
+    var letters = "0123456789ABCDEF".split("");
+    var color = "";
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
   function pickTextColor(bgColor, lightColor = "white", darkColor = "black") {
     var color = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
     var r = parseInt(color.substring(0, 2), 16); // hexToR
@@ -51,10 +74,7 @@ function App() {
           >
             <h2>{colorData.colorName}</h2>
           </div>
-          <div
-            className="formfit color-picker"
-            onMouseUp={handleChangeColorComplete}
-          >
+          <div className="formfit color-picker">
             <Picker
               color={colorData.hex}
               onChange={handleChangeColor}
